@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green AI Solutions - Client Demonstration Portal</title>
+    <style>
+        :root {
+            --primary-color: #10B981;
+            --primary-dark: #059669;
+            --secondary-color: #3B82F6;
+            --secondary-dark: #2563EB;
+            --accent-color: #F59E0B;
+            --dark-color: #1F2937;
+            --dark-color-light: #374151;
+            --light-color: #F9FAFB;
+            --gray-color: #6B7280;
+            --gray-light: #E5E7EB;
+            --success-color: #16A34A;
+            --error-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: var(--dark-color);
+            line-height: 1.6;
+            background-color: var(--light-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--dark-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        nav a:hover {
+            color: var(--primary-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+        
+        .welcome-section {
+            padding: 120px 0 60px;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            text-align: center;
+        }
+        
+        .welcome-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+        }
+        
+        .welcome-section p {
+            font-size: 1.2rem;
+            color: var(--dark-color-light);
+            margin-bottom: 30px;
+        }
+        
+        .client-info {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 40px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+        
+        .client-info h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .client-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .detail-item {
+            margin-bottom: 10px;
+        }
+        
+        .detail-label {
+            font-weight: 500;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .actions-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .demo-nav {
+            background-color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .nav-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .nav-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-img {
+            height: 160px;
+            background-color: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-color);
+            font-size: 1.5rem;
+        }
+        
+        .card-img.solutions {
+            background-color: #d1fae5;
+            color: var(--primary-color);
+        }
+        
+        .card-img.industry {
+            background-color: #dbeafe;
+            color: var(--secondary-color);
+        }
+        
+        .card-img.case-studies {
+            background-color: #fef3c7;
+            color: var(--accent-color);
+        }
+        
+        .card-img.pricing {
+            background-color: #fee2e2;
+            color: var(--error-color);
+        }
+        
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-content h3 {
+            margin-bottom: 10px;
+        }
+        
+        .card-content p {
+            color: var(--gray-color);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        
+        .card-actions {
+            margin-top: auto;
+        }
+        
+        .demonstrations-section {
+            padding: 60px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .section-header p {
+            color: var(--gray-color);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .demo-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .demo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+        
+        .demo-card-header {
+            padding: 15px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .demo-card-header.hr-system {
+            background-color: var(--primary-color);
+        }
+        
+        .demo-card-header.ai-consulting {
+            background-color: var(--secondary-color);
+        }
+        
+        .demo-card-header.tools {
+            background-color: var(--accent-color);
+        }
+        
+        .demo-card-content {
+            padding: 20px;
+        }
+        
+        .demo-card h3 {
+            margin-bottom: 15px;
+        }
+        
+        .demo-card p {
+            color: var(--gray-color);
+            margin-bottom: 20px;
+        }
+        
+        .demo-links {
+            list-style: none;
+        }
+        
+        .demo-links li {
+            margin-bottom: 10px;
+        }
+        
+        .demo-links a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            padding: 8px 0;
+            transition: color 0.2s;
+        }
+        
+        .demo-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .demo-links .icon {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+        }
+        
+        .resources-section {
+            padding: 60px 0;
+            background-color: var(--light-color);
+        }
+        
+        .resource-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .resource-card-content {
+            padding: 20px;
+        }
+        
+        .resource-card h3 {
+            margin-bottom: 10px;
+        }
+        
+        .resource-card p {
+            color: var(--gray-color);
+            margin-bottom: 15px;
+        }
+        
+        .resource-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background-color: #e5e7eb;
+            color: var(--dark-color);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .next-steps-section {
+            padding: 80px 0;
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+        }
+        
+        .next-steps-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .next-steps-section p {
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: #D1D5DB;
+        }
+        
+        .next-steps-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        footer {
+            background-color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        footer p {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+            
+            .welcome-section {
+                padding: 140px 0 60px;
+            }
+            
+            .welcome-section h1 {
+                font-size: 2rem;
+            }
+            
+            .actions-container {
+                flex-direction: column;
+            }
+            
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .next-steps-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">Green<span>AI</span> Solutions</a>
+                <nav>
+                    <ul>
+                        <li><a href="#solutions">Solutions</a></li>
+                        <li><a href="#demonstrations">Demonstrations</a></li>
+                        <li><a href="#resources">Resources</a></li>
+                        <li><a href="#next-steps">Next Steps</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="welcome-section">
+        <div class="container">
+            <div class="welcome-content">
+                <h1>Welcome to your Personalized Demonstration</h1>
+                <p>This environment provides interactive demonstrations of Green AI Solutions' capabilities tailored to your business needs.</p>
+                
+                <div class="actions-container">
+                    <a href="#demonstrations" class="btn">Explore Demonstrations</a>
+                    <a href="#next-steps" class="btn btn-outline">Schedule a Follow-up</a>
+                </div>
+                
+                <div class="client-info">
+                    <h3>Your Custom Profile</h3>
+                    <div class="client-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Company</div>
+                            <div class="detail-value">Melbourne Building Contractors</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Industry</div>
+                            <div class="detail-value">Construction</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Size</div>
+                            <div class="detail-value">35 employees</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Location</div>
+                            <div class="detail-value">Melbourne, VIC</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="demo-nav" id="solutions">
+        <div class="container">
+            <div class="section-header">
+                <h2>Explore Solutions</h2>
+                <p>Navigate through our tailored solutions designed to address your specific business challenges.</p>
+            </div>
+            
+            <div class="nav-cards">
+                <div class="nav-card">
+                    <div class="card-img solutions">
+                        <i class="fas fa-cogs">HR Automation</i>
+                    </div>
+                    <div class="card-content">
+                        <h3>HR Automation System</h3>
+                        <p>Explore our comprehensive HR automation platform with built-in Australian compliance and neurodivergent-friendly interfaces.</p>
+                        <div class="card-actions">
+                            <a href="#hr-system" class="btn">View Demonstrations</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-card">
+                    <div class="card-img industry">
+                        <i class="fas fa-building">Industry</i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Construction Industry Solutions</h3>
+                        <p>See specialized features designed specifically for construction businesses in Australia.</p>
+                        <div class="card-actions">
+                            <a href="#industry-solutions" class="btn btn-secondary">Explore Features</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-card">
+                    <div class="card-img case-studies">
+                        <i class="fas fa-file-alt">Case Studies</i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Construction Case Studies</h3>
+                        <p>Review real-world examples of how similar businesses have benefited from our solutions.</p>
+                        <div class="card-actions">
+                            <a href="#case-studies" class="btn" style="background-color: var(--accent-color);">Read Case Studies</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-card">
+                    <div class="card-img pricing">
+                        <i class="fas fa-tag">Pricing</i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Pricing & Implementation</h3>
+                        <p>Explore transparent pricing options and implementation approaches for your business.</p>
+                        <div class="card-actions">
+                            <a href="#pricing" class="btn" style="background-color: var(--error-color);">View Pricing</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="demonstrations-section" id="demonstrations">
+        <div class="container">
+            <div class="section-header">
+                <h2>Interactive Demonstrations</h2>
+                <p>Experience our solutions through interactive demonstrations tailored to your business needs.</p>
+            </div>
+            
+            <div class="demo-grid" id="hr-system">
+                <div class="demo-card">
+                    <div class="demo-card-header hr-system">HR Automation System</div>
+                    <div class="demo-card-content">
+                        <h3>Core HR Features</h3>
+                        <p>Explore the foundational capabilities of our HR automation system.</p>
+                        <ul class="demo-links">
+                            <li><a href="hr_command_center.html"><span class="icon"></span>HR Command Center Dashboard</a></li>
+                            <li><a href="employee_management.html"><span class="icon"></span>Employee Management</a></li>
+                            <li><a href="document_generation.html"><span class="icon"></span>Document Automation</a></li>
+                            <li><a href="compliance_monitoring.html"><span class="icon"></span>Compliance Monitoring</a></li>
+                            <li><a href="reporting_analytics.html"><span class="icon"></span>Reporting & Analytics</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="demo-card">
+                    <div class="demo-card-header hr-system">Compliance Features</div>
+                    <div class="demo-card-content">
+                        <h3>Australian Compliance</h3>
+                        <p>See how our system handles Australian HR compliance requirements.</p>
+                        <ul class="demo-links">
+                            <li><a href="fair_work_compliance.html"><span class="icon"></span>Fair Work Act Compliance</a></li>
+                            <li><a href="award_interpretation.html"><span class="icon"></span>Award Interpretation</a></li>
+                            <li><a href="contractor_management.html"><span class="icon"></span>Contractor Compliance</a></li>
+                            <li><a href="documentation_management.html"><span class="icon"></span>Compliance Documentation</a></li>
+                            <li><a href="audit_preparation.html"><span class="icon"></span>Audit Preparation Tools</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="demo-card">
+                    <div class="demo-card-header hr-system">Neurodivergent Features</div>
+                    <div class="demo-card-content">
+                        <h3>Dual Interface Approach</h3>
+                        <p>Experience our unique dual interface designed for both neurotypical and neurodivergent users.</p>
+                        <ul class="demo-links">
+                            <li><a href="interface_comparison.html"><span class="icon"></span>Interface Comparison</a></li>
+                            <li><a href="focus_mode.html"><span class="icon"></span>Focus Mode Features</a></li>
+                            <li><a href="clear_instructions.html"><span class="icon"></span>Clear Step-by-Step Instructions</a></li>
+                            <li><a href="reduced_distractions.html"><span class="icon"></span>Distraction Reduction</a></li>
+                            <li><a href="personalization.html"><span class="icon"></span>User Personalization Options</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="demo-card" id="industry-solutions">
+                    <div class="demo-card-header hr-system">Construction Industry Features</div>
+                    <div class="demo-card-content">
+                        <h3>Construction-Specific Solutions</h3>
+                        <p>Discover features designed specifically for construction businesses.</p>
+                        <ul class="demo-links">
+                            <li><a href="subcontractor_management.html"><span class="icon"></span>Subcontractor Management</a></li>
+                            <li><a href="construction_awards.html"><span class="icon"></span>Construction Award Interpretation</a></li>
+                            <li><a href="site_based_scheduling.html"><span class="icon"></span>Site-Based Scheduling</a></li>
+                            <li><a href="safety_documentation.html"><span class="icon"></span>Safety Documentation Management</a></li>
+                            <li><a href="certification_tracking.html"><span class="icon"></span>Certification & License Tracking</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-grid" style="margin-top: 30px;">
+                <div class="demo-card">
+                    <div class="demo-card-header ai-consulting">AI Consulting</div>
+                    <div class="demo-card-content">
+                        <h3>AI Consulting Services</h3>
+                        <p>Explore our AI consulting approach and see how we can help your business leverage AI effectively.</p>
+                        <ul class="demo-links">
+                            <li><a href="implementation_methodology.html"><span class="icon"></span>Implementation Methodology</a></li>
+                            <li><a href="knowledge_transfer.html"><span class="icon"></span>Knowledge Transfer Approach</a></li>
+                            <li><a href="process_automation.html"><span class="icon"></span>Process Automation</a></li>
+                            <li><a href="ai_readiness.html"><span class="icon"></span>AI Readiness Assessment</a></li>
+                            <li><a href="ai_implementation.html"><span class="icon"></span>AI Implementation Framework</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="demo-card" id="tools">
+                    <div class="demo-card-header tools">Interactive Tools</div>
+                    <div class="demo-card-content">
+                        <h3>Business Tools</h3>
+                        <p>Try our interactive tools to see potential benefits for your business.</p>
+                        <ul class="demo-links">
+                            <li><a href="roi_calculator.html"><span class="icon"></span>ROI Calculator</a></li>
+                            <li><a href="compliance_assessment.html"><span class="icon"></span>Compliance Self-Assessment</a></li>
+                            <li><a href="implementation_estimator.html"><span class="icon"></span>Implementation Estimator</a></li>
+                            <li><a href="process_optimization.html"><span class="icon"></span>Process Optimization Finder</a></li>
+                            <li><a href="ai_opportunity.html"><span class="icon"></span>AI Opportunity Identifier</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="demo-card" id="case-studies">
+                    <div class="demo-card-header hr-system">Case Studies</div>
+                    <div class="demo-card-content">
+                        <h3>Real-World Examples</h3>
+                        <p>See how businesses similar to yours have benefited from our solutions.</p>
+                        <ul class="demo-links">
+                            <li><a href="construction_compliance_case_study.html"><span class="icon"></span>Construction Company Compliance</a></li>
+                            <li><a href="subcontractor_management_case_study.html"><span class="icon"></span>Subcontractor Management</a></li>
+                            <li><a href="onboarding_efficiency_case_study.html"><span class="icon"></span>Onboarding Efficiency</a></li>
+                            <li><a href="administrative_savings_case_study.html"><span class="icon"></span>Administrative Time Savings</a></li>
+                            <li><a href="multi_site_case_study.html"><span class="icon"></span>Multi-Site Business</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="demo-card" id="pricing">
+                    <div class="demo-card-header hr-system">Pricing & Implementation</div>
+                    <div class="demo-card-content">
+                        <h3>Transparent Pricing</h3>
+                        <p>Explore our pricing options and implementation approach.</p>
+                        <ul class="demo-links">
+                            <li><a href="pricing_models.html"><span class="icon"></span>Pricing Models</a></li>
+                            <li><a href="implementation_process.html"><span class="icon"></span>Implementation Process</a></li>
+                            <li><a href="training_approach.html"><span class="icon"></span>Training & Knowledge Transfer</a></li>
+                            <li><a href="support_options.html"><span class="icon"></span>Support Options</a></li>
+                            <li><a href="custom_quote.html"><span class="icon"></span>Request Custom Quote</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="resources-section" id="resources">
+        <div class="container">
+            <div class="section-header">
+                <h2>Educational Resources</h2>
+                <p>Access valuable resources to learn more about HR automation, compliance, and AI implementation.</p>
+            </div>
+            
+            <div class="resource-cards">
+                <div class="resource-card">
+                    <div class="resource-card-content">
+                        <h3>Australian HR Compliance Guide</h3>
+                        <p>Comprehensive guide to HR compliance requirements for Australian businesses.</p>
+                        <div>
+                            <span class="resource-tag">Compliance</span>
+                            <span class="resource-tag">HR Management</span>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <a href="resources/compliance_guide.pdf" class="btn btn-outline">Download Guide</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-card-content">
+                        <h3>Construction Industry HR Checklist</h3>
+                        <p>Essential HR compliance checklist specifically for construction businesses.</p>
+                        <div>
+                            <span class="resource-tag">Construction</span>
+                            <span class="resource-tag">Compliance</span>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <a href="resources/construction_checklist.pdf" class="btn btn-outline">Download Checklist</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-card-content">
+                        <h3>AI Implementation Guide for SMEs</h3>
+                        <p>Practical guide to implementing AI in small to medium businesses.</p>
+                        <div>
+                            <span class="resource-tag">AI</span>
+                            <span class="resource-tag">Implementation</span>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <a href="resources/ai_implementation_guide.pdf" class="btn btn-outline">Download Guide</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-card-content">
+                        <h3>Neurodivergent-Friendly Workplace Guide</h3>
+                        <p>Best practices for creating inclusive workplaces for neurodivergent employees.</p>
+                        <div>
+                            <span class="resource-tag">Inclusion</span>
+                            <span class="resource-tag">Neurodiversity</span>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <a href="resources/neurodivergent_workplace.pdf" class="btn btn-outline">Download Guide</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="next-steps-section" id="next-steps">
+        <div class="container">
+            <h2>Ready to Take the Next Step?</h2>
+            <p>We're here to help you move forward with confidence. Choose from these options to continue your journey with Green AI Solutions.</p>
+            
+            <div class="next-steps-actions">
+                <a href="schedule_demo.html" class="btn">Schedule Live Demonstration</a>
+                <a href="request_proposal.html" class="btn btn-secondary">Request Custom Proposal</a>
+                <a href="book_consultation.html" class="btn" style="background-color: var(--accent-color);">Book Consultation</a>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>© 2025 Green AI Solutions. This demonstration environment is personalized for Melbourne Building Contractors.</p>
+            <p><a href="privacy_policy.html">Privacy Policy</a> | <a href="terms_of_use.html">Terms of Use</a> | <a href="support.html">Support</a></p>
+        </div>
+    </footer>
+</body>
+</html>

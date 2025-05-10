@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green AI Solutions - ROI Calculator</title>
+    <style>
+        :root {
+            --primary-color: #10B981;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --dark-color: #1F2937;
+            --light-color: #F9FAFB;
+            --gray-color: #6B7280;
+            --success-color: #16A34A;
+            --error-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: var(--dark-color);
+            line-height: 1.6;
+            background-color: var(--light-color);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        main {
+            padding: 40px 0;
+        }
+        
+        h1, h2, h3, h4 {
+            color: var(--dark-color);
+            margin-top: 0;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .calculator-interface {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-interface {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        input, select {
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: #0E9F6E;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .results.active {
+            display: block;
+        }
+        
+        .result-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .result-metric {
+            background-color: #f3f4f6;
+            padding: 15px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .result-metric.highlight {
+            background-color: #d1fae5;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .metric-label {
+            font-weight: 500;
+        }
+        
+        .metric-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .positive {
+            color: var(--success-color);
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .results-table th, .results-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .results-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        
+        .chart-container {
+            margin-top: 20px;
+            height: 300px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--dark-color);
+            border: 1px solid #d1d5db;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f9fafb;
+        }
+        
+        .assumptions {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            margin-top: 20px;
+        }
+        
+        .assumptions h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .assumptions ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .input-with-label {
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-with-label input {
+            flex: 1;
+        }
+        
+        .input-with-label .label-suffix {
+            margin-left: 10px;
+            color: var(--gray-color);
+        }
+        
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .slider-container input {
+            width: 100%;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+        
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .benefit-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .benefit-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .benefit-item:last-child {
+            border-bottom: none;
+        }
+        
+        .benefit-description {
+            flex: 1;
+        }
+        
+        .benefit-value {
+            font-weight: 600;
+            text-align: right;
+        }
+        
+        @media print {
+            header, .calculator-form, .actions {
+                display: none;
+            }
+            
+            .results {
+                display: block !important;
+            }
+            
+            .container {
+                width: 100%;
+                max-width: 100%;
+                padding: 0;
+            }
+            
+            body {
+                background-color: white;
+                font-size: 12pt;
+            }
+            
+            .card {
+                box-shadow: none;
+                border: 1px solid #e5e7eb;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">Green AI Solutions</div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            <h1>ROI Calculator</h1>
+            <p class="text-center" style="text-align: center; margin-bottom: 30px;">Estimate the return on investment for implementing Green AI Solutions</p>
+            
+            <div class="calculator-interface">
+                <div class="calculator-form card">
+                    <h2>Business Information</h2>
+                    <form id="roiForm">
+                        <div class="form-group">
+                            <label for="industry">Industry</label>
+                            <select id="industry" name="industry">
+                                <option value="construction">Construction</option>
+                                <option value="professional">Professional Services</option>
+                                <option value="retail">Retail</option>
+                                <option value="manufacturing">Manufacturing</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="hospitality">Hospitality</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="employees">Number of Employees</label>
+                            <input type="number" id="employees" name="employees" min="1" value="25">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="hrAdminHours">Weekly Hours Spent on HR Administration</label>
+                            <input type="number" id="hrAdminHours" name="hrAdminHours" min="0" value="20">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="hourlyRate">Average Hourly Rate for HR/Admin Staff ($AUD)</label>
+                            <input type="number" id="hourlyRate" name="hourlyRate" min="0" value="35">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="complianceHours">Monthly Hours Spent on Compliance Activities</label>
+                            <input type="number" id="complianceHours" name="complianceHours" min="0" value="15">
+                        </div>
+                        
+                        <h2>Current Challenges</h2>
+                        
+                        <div class="form-group">
+                            <label for="onboardingTime">Average Onboarding Time per New Employee (hours)</label>
+                            <input type="number" id="onboardingTime" name="onboardingTime" min="0" value="8">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="annualHires">Estimated Annual New Hires</label>
+                            <input type="number" id="annualHires" name="annualHires" min="0" value="10">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="documentTime">Hours Spent Monthly on Document Management</label>
+                            <input type="number" id="documentTime" name="documentTime" min="0" value="12">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="auditPrep">Days Spent Annually on Audit/Compliance Preparation</label>
+                            <input type="number" id="auditPrep" name="auditPrep" min="0" value="5">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="improvementPercent">Expected Efficiency Improvement (%)</label>
+                            <div class="slider-container">
+                                <input type="range" id="improvementPercent" name="improvementPercent" min="40" max="80" value="65">
+                                <div class="slider-labels">
+                                    <span>40%</span>
+                                    <span>60%</span>
+                                    <span>80%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="button" id="calculateBtn">Calculate ROI</button>
+                    </form>
+                </div>
+                
+                <div class="results card" id="resultsCard">
+                    <div class="tab-container">
+                        <div class="tabs">
+                            <div class="tab active" data-tab="summary">Summary</div>
+                            <div class="tab" data-tab="detailed">Detailed Analysis</div>
+                            <div class="tab" data-tab="timeline">ROI Timeline</div>
+                        </div>
+                        
+                        <div class="tab-content active" id="summary-tab">
+                            <div class="result-summary">
+                                <div class="result-metric highlight">
+                                    <div class="metric-label">Annual Cost Savings</div>
+                                    <div class="metric-value positive" id="annualSavings">$0</div>
+                                </div>
+                                
+                                <div class="result-metric">
+                                    <div class="metric-label">Time to ROI</div>
+                                    <div class="metric-value" id="roiMonths">0 months</div>
+                                </div>
+                                
+                                <div class="result-metric">
+                                    <div class="metric-label">5-Year Net Benefit</div>
+                                    <div class="metric-value positive" id="fiveYearBenefit">$0</div>
+                                </div>
+                                
+                                <div class="result-metric">
+                                    <div class="metric-label">Hours Saved Annually</div>
+                                    <div class="metric-value" id="hoursSaved">0 hours</div>
+                                </div>
+                            </div>
+                            
+                            <h3>Benefit Breakdown</h3>
+                            <ul class="benefit-list">
+                                <li class="benefit-item">
+                                    <div class="benefit-description">HR Administration Savings</div>
+                                    <div class="benefit-value" id="hrAdminSavings">$0</div>
+                                </li>
+                                <li class="benefit-item">
+                                    <div class="benefit-description">Compliance Management Savings</div>
+                                    <div class="benefit-value" id="complianceSavings">$0</div>
+                                </li>
+                                <li class="benefit-item">
+                                    <div class="benefit-description">Onboarding Efficiency Savings</div>
+                                    <div class="benefit-value" id="onboardingSavings">$0</div>
+                                </li>
+                                <li class="benefit-item">
+                                    <div class="benefit-description">Document Management Savings</div>
+                                    <div class="benefit-value" id="documentSavings">$0</div>
+                                </li>
+                                <li class="benefit-item">
+                                    <div class="benefit-description">Audit/Compliance Preparation Savings</div>
+                                    <div class="benefit-value" id="auditSavings">$0</div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tab-content" id="detailed-tab">
+                            <h3>Cost-Benefit Analysis</h3>
+                            <table class="results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Year 1</th>
+                                        <th>Year 2</th>
+                                        <th>Year 3</th>
+                                        <th>Year 4</th>
+                                        <th>Year 5</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detailedTableBody">
+                                    <!-- Filled by JavaScript -->
+                                </tbody>
+                            </table>
+                            
+                            <h3>Additional Benefits</h3>
+                            <ul>
+                                <li>Reduced compliance risk exposure</li>
+                                <li>Improved data accuracy and decision-making</li>
+                                <li>Enhanced employee experience</li>
+                                <li>Increased business scalability</li>
+                                <li>Reduced dependency on specific personnel</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tab-content" id="timeline-tab">
+                            <h3>Cumulative ROI Timeline</h3>
+                            <div class="chart-container" id="roiChart">
+                                <!-- Chart will be inserted here by JavaScript -->
+                                [Chart visualization of ROI over time]
+                            </div>
+                            
+                            <h3>Key ROI Milestones</h3>
+                            <ul id="roiMilestones">
+                                <!-- Filled by JavaScript -->
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button id="exportPdfBtn">Export PDF Report</button>
+                        <button id="emailReportBtn" class="btn-secondary">Email Report</button>
+                        <button id="recalculateBtn" class="btn-secondary">Recalculate</button>
+                    </div>
+                    
+                    <div class="assumptions">
+                        <h3>Calculation Assumptions</h3>
+                        <ul>
+                            <li>Calculations based on Australian average labor costs and productivity metrics</li>
+                            <li>Efficiency improvements based on actual client results in similar industries</li>
+                            <li>Implementation costs estimated based on business size and complexity</li>
+                            <li>ROI calculated using standard net present value methodology</li>
+                            <li>Results are estimates and actual outcomes may vary based on specific business circumstances</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize variables
+            const calculateBtn = document.getElementById('calculateBtn');
+            const recalculateBtn = document.getElementById('recalculateBtn');
+            const exportPdfBtn = document.getElementById('exportPdfBtn');
+            const emailReportBtn = document.getElementById('emailReportBtn');
+            const resultsCard = document.getElementById('resultsCard');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Add event listeners
+            calculateBtn.addEventListener('click', calculateROI);
+            recalculateBtn.addEventListener('click', function() {
+                resultsCard.classList.remove('active');
+            });
+            
+            exportPdfBtn.addEventListener('click', function() {
+                alert('PDF export functionality would be implemented here');
+                // In a real implementation, this would generate a PDF report
+            });
+            
+            emailReportBtn.addEventListener('click', function() {
+                alert('Email report functionality would be implemented here');
+                // In a real implementation, this would send the report via email
+            });
+            
+            // Tab switching functionality
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to selected tab and content
+                    this.classList.add('active');
+                    document.getElementById(tabId + '-tab').classList.add('active');
+                });
+            });
+            
+            // ROI calculation function
+            function calculateROI() {
+                // Get input values
+                const industry = document.getElementById('industry').value;
+                const employees = parseInt(document.getElementById('employees').value);
+                const hrAdminHours = parseInt(document.getElementById('hrAdminHours').value);
+                const hourlyRate = parseInt(document.getElementById('hourlyRate').value);
+                const complianceHours = parseInt(document.getElementById('complianceHours').value);
+                const onboardingTime = parseInt(document.getElementById('onboardingTime').value);
+                const annualHires = parseInt(document.getElementById('annualHires').value);
+                const documentTime = parseInt(document.getElementById('documentTime').value);
+                const auditPrep = parseInt(document.getElementById('auditPrep').value);
+                const improvementPercent = parseInt(document.getElementById('improvementPercent').value);
+                
+                // Calculate savings based on input
+                const hrAdminSavings = (hrAdminHours * hourlyRate * 52) * (improvementPercent / 100);
+                const complianceSavings = (complianceHours * hourlyRate * 12) * (improvementPercent / 100);
+                const onboardingSavings = (onboardingTime * annualHires * hourlyRate) * (improvementPercent / 100);
+                const documentSavings = (documentTime * hourlyRate * 12) * (improvementPercent / 100);
+                const auditSavings = (auditPrep * 8 * hourlyRate) * (improvementPercent / 100); // Assuming 8-hour days
+                
+                const totalAnnualSavings = hrAdminSavings + complianceSavings + onboardingSavings + documentSavings + auditSavings;
+                
+                // Calculate implementation costs based on business size
+                let implementationCost = 0;
+                if (employees <= 10) {
+                    implementationCost = 3500 + (employees * 350);
+                } else if (employees <= 50) {
+                    implementationCost = 5000 + (employees * 300);
+                } else {
+                    implementationCost = 10000 + (employees * 250);
+                }
+                
+                // Calculate ongoing costs
+                const monthlyCost = employees * 10; // $10 per employee per month
+                const annualCost = monthlyCost * 12;
+                
+                // Calculate ROI timeframe
+                const monthlyBenefit = totalAnnualSavings / 12;
+                const roiMonths = Math.ceil(implementationCost / monthlyBenefit);
+                
+                // Calculate 5-year benefit
+                const fiveYearBenefit = (totalAnnualSavings * 5) - implementationCost - (annualCost * 5);
+                
+                // Calculate hours saved
+                const hoursSaved = Math.round((hrAdminHours * 52 + complianceHours * 12 + onboardingTime * annualHires + documentTime * 12 + auditPrep * 8) * (improvementPercent / 100));
+                
+                // Update the results
+                document.getElementById('annualSavings').textContent = formatCurrency(totalAnnualSavings);
+                document.getElementById('roiMonths').textContent = `${roiMonths} months`;
+                document.getElementById('fiveYearBenefit').textContent = formatCurrency(fiveYearBenefit);
+                document.getElementById('hoursSaved').textContent = `${hoursSaved} hours`;
+                
+                document.getElementById('hrAdminSavings').textContent = formatCurrency(hrAdminSavings);
+                document.getElementById('complianceSavings').textContent = formatCurrency(complianceSavings);
+                document.getElementById('onboardingSavings').textContent = formatCurrency(onboardingSavings);
+                document.getElementById('documentSavings').textContent = formatCurrency(documentSavings);
+                document.getElementById('auditSavings').textContent = formatCurrency(auditSavings);
+                
+                // Populate detailed table
+                const tableBody = document.getElementById('detailedTableBody');
+                tableBody.innerHTML = `
+                    <tr>
+                        <td>Implementation Cost</td>
+                        <td>${formatCurrency(implementationCost)}</td>
+                        <td>$0</td>
+                        <td>$0</td>
+                        <td>$0</td>
+                        <td>$0</td>
+                    </tr>
+                    <tr>
+                        <td>Annual Subscription</td>
+                        <td>${formatCurrency(annualCost)}</td>
+                        <td>${formatCurrency(annualCost)}</td>
+                        <td>${formatCurrency(annualCost)}</td>
+                        <td>${formatCurrency(annualCost)}</td>
+                        <td>${formatCurrency(annualCost)}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Costs</td>
+                        <td>${formatCurrency(implementationCost + annualCost)}</td>
+                        <td>${formatCurrency(annualCost)}</td>
+                        <td>${formatCurrency(annualCost)}</td>
+                        <td>${formatCurrency(annualCost)}</td>
+                        <td>${formatCurrency(annualCost)}</td>
+                    </tr>
+                    <tr>
+                        <td>Annual Benefits</td>
+                        <td>${formatCurrency(totalAnnualSavings)}</td>
+                        <td>${formatCurrency(totalAnnualSavings)}</td>
+                        <td>${formatCurrency(totalAnnualSavings)}</td>
+                        <td>${formatCurrency(totalAnnualSavings)}</td>
+                        <td>${formatCurrency(totalAnnualSavings)}</td>
+                    </tr>
+                    <tr>
+                        <td>Net Annual Benefit</td>
+                        <td>${formatCurrency(totalAnnualSavings - implementationCost - annualCost)}</td>
+                        <td>${formatCurrency(totalAnnualSavings - annualCost)}</td>
+                        <td>${formatCurrency(totalAnnualSavings - annualCost)}</td>
+                        <td>${formatCurrency(totalAnnualSavings - annualCost)}</td>
+                        <td>${formatCurrency(totalAnnualSavings - annualCost)}</td>
+                    </tr>
+                    <tr>
+                        <td>Cumulative Benefit</td>
+                        <td>${formatCurrency(totalAnnualSavings - implementationCost - annualCost)}</td>
+                        <td>${formatCurrency((totalAnnualSavings - annualCost) * 2 - implementationCost)}</td>
+                        <td>${formatCurrency((totalAnnualSavings - annualCost) * 3 - implementationCost)}</td>
+                        <td>${formatCurrency((totalAnnualSavings - annualCost) * 4 - implementationCost)}</td>
+                        <td>${formatCurrency((totalAnnualSavings - annualCost) * 5 - implementationCost)}</td>
+                    </tr>
+                `;
+                
+                // Populate ROI milestones
+                const milestones = document.getElementById('roiMilestones');
+                milestones.innerHTML = `
+                    <li>Break-even point: <strong>${roiMonths} months</strong></li>
+                    <li>First year net benefit: <strong>${formatCurrency(totalAnnualSavings - implementationCost - annualCost)}</strong></li>
+                    <li>Second year ROI: <strong>${Math.round(((totalAnnualSavings - annualCost) * 2 - implementationCost) / (implementationCost + annualCost * 2) * 100)}%</strong></li>
+                    <li>Five year ROI: <strong>${Math.round(((totalAnnualSavings - annualCost) * 5 - implementationCost) / (implementationCost + annualCost * 5) * 100)}%</strong></li>
+                `;
+                
+                // Show results
+                resultsCard.classList.add('active');
+            }
+            
+            // Helper function to format currency
+            function formatCurrency(value) {
+                return '$' + Math.round(value).toLocaleString('en-AU');
+            }
+        });
+    </script>
+</body>
+</html>
